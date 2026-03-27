@@ -1,6 +1,6 @@
 package main
 
-import grpcaverageclient "github.com/hiteshrepo/fibonacci-api/apps/grpc-average-client"
+import grpcaverageclient "github.com/hiteshrepo/go-rest-vs-grpc/apps/grpc-average-client"
 
 func main() {
 	app := grpcaverageclient.NewApp()

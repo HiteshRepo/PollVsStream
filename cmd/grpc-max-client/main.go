@@ -1,6 +1,6 @@
 package main
 
-import grpcmaxclient "github.com/hiteshrepo/fibonacci-api/apps/grpc-max-client"
+import grpcmaxclient "github.com/hiteshrepo/go-rest-vs-grpc/apps/grpc-max-client"
 
 func main() {
 	app := grpcmaxclient.NewApp()

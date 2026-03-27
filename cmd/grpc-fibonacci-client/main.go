@@ -1,6 +1,6 @@
 package main
 
-import grpcfibonacciclient "github.com/hiteshrepo/fibonacci-api/apps/grpc-fibonacci-client"
+import grpcfibonacciclient "github.com/hiteshrepo/go-rest-vs-grpc/apps/grpc-fibonacci-client"
 
 func main() {
 	app := grpcfibonacciclient.NewApp()

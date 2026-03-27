@@ -1,8 +1,13 @@
 package restfibonacciserver
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -23,9 +28,28 @@ func (a *App) Start() {
 	router.Use(generateRequestIDMiddleware)
 	router.HandleFunc("/fibonacci/sync/{number:[0-9]+}", a.fibonacciSyncHandler)
 	router.HandleFunc("/fibonacci/async/{number:[0-9]+}", a.fibonacciAsyncHandler)
-	http.Handle("/", router)
+
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
 	fmt.Println("Server is running on :8080")
-	http.ListenAndServe(":8080", nil)
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			fmt.Fprintf(os.Stderr, "listen: %v\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	fmt.Println("Shutting down REST fibonacci server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	srv.Shutdown(ctx)
 }
 
 func generateRequestIDMiddleware(next http.Handler) http.Handler {

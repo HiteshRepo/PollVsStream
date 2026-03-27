@@ -1,0 +1,32 @@
+services:
+  rest-fibonacci-server:
+    build:
+      context: .
+      args:
+        CMD_PATH: rest-fibonacci-server
+    ports:
+      - "8080:8080"
+
+  grpc-fibonacci-server:
+    build:
+      context: .
+      args:
+        CMD_PATH: grpc-fibonacci-server
+    ports:
+      - "50051:50051"
+
+  grpc-average-server:
+    build:
+      context: .
+      args:
+        CMD_PATH: grpc-average-server
+    ports:
+      - "50052:50052"
+
+  grpc-max-server:
+    build:
+      context: .
+      args:
+        CMD_PATH: grpc-max-server
+    ports:
+      - "50053:50053"

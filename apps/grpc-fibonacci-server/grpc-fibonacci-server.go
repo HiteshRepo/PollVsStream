@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"github.com/hiteshrepo/fibonacci-api/proto"
+	"github.com/hiteshrepo/go-rest-vs-grpc/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -31,15 +34,22 @@ func (a *App) Start() {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	opts := []grpc.ServerOption{}
-	s := grpc.NewServer(opts...)
+	s := grpc.NewServer()
 	proto.RegisterFibonacciServiceServer(s, a)
-
 	reflection.Register(s)
 
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
-	}
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("Failed to serve: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	fmt.Println("Shutting down gRPC fibonacci server...")
+	s.GracefulStop()
 }
 
 func (a *App) Shutdown() {}

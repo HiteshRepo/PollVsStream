@@ -7,8 +7,9 @@ import (
 	"io"
 	"log"
 
-	"github.com/hiteshrepo/fibonacci-api/proto"
+	"github.com/hiteshrepo/go-rest-vs-grpc/proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -35,8 +36,7 @@ func (a *App) Start() {
 
 	servAddr := "localhost:50051"
 
-	opts := grpc.WithInsecure()
-	a.clientConn, err = grpc.Dial(servAddr, opts)
+	a.clientConn, err = grpc.Dial(servAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}

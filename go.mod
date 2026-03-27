@@ -1,4 +1,4 @@
-module github.com/hiteshrepo/fibonacci-api
+module github.com/hiteshrepo/go-rest-vs-grpc
 
 go 1.20
 
